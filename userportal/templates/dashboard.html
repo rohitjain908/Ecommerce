@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+
+
+
+<navbar style = "height: 50px; margin-top: 10px;" >
+   <div style = "display: inline-block; margin-left: 10px; font-size: 25px;">Your Shop</div>
+   <div style = "display: inline-block; margin-left: 500px; font-size: 25px;">Welcome {{request.user.username}}</div>
+   <button type = "button" style = "display: inline-block; margin-left: 500px; font-size: 22px; margin-top: 10px;;
+   border-radius: 10px; padding: 7px;"><a href = "{% url 'logout' %}">Logout</a></button>
+</navbar>
+
+<br/>
+<i class="fa fa-shopping-bag fa-2x" aria-hidden="true" style = "margin-left: 600px; margin-top: 20px;" id = "count">  :- {{total}} items</i>
+<div style = "margin-left: 620px;">
+    <button type = "button" style = "color : green; font-size: 20px; padding: 5px; margin: 10px;">
+        <a href = "{% url 'cart' %}">show cart</a></button>
+</div>
+
+
+<div class = "row" style = "margin : 50px">
+    {% for product in products %}
+        <div class = "col">
+            <div class = "card" style = "width: 18rem; margin: 10px;">
+                <div class = "card-body">
+                    <div class = "card-title">{{product.name}}</div>
+                    <div class = "card-text" style = "margin: 5px;">{{product.price}} Rs.</div>
+                    <button type = "button" style = "background-color: yellow; border-radius: 15px; padding: 5px; border-top: 10px;"
+                     onclick="addItem({{product.id}})">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div> 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+
+<script type = "text/javascript">
+    function addItem(productId){
+        //alert(productId)
+        console.log("here")
+        console.log(productId)
+        // console.log(productName)
+        let data = new FormData();
+        data.append("productId", productId)  
+        data.append("csrfmiddlewaretoken", '{{csrf_token}}')
+        axios.post('http://127.0.0.1:8000/userportal/add-item', data)
+        .then(res => {
+            alert("Added in your cart")
+            console.log(res)
+            document.getElementById("count").innerHTML =   "  :-  "  + res['data']['total'] + " items" 
+        })
+        .catch(eroor => console.log(eroor))
+    }
+</script>
+{% endblock content %}
