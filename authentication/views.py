@@ -7,30 +7,22 @@ from .forms import Userform
 
 
 
-# Create your views here.
 
-# class UserData(forms.Form):
 
 def index(request):
-    
   if not request.user.is_authenticated:
-    print("hee")
     return HttpResponseRedirect(reverse("login"))
   else:
-    print(request.user)
     return HttpResponseRedirect(reverse("home"))
 
 def register(request):
   if request.user.is_authenticated:
     return HttpResponseRedirect(reverse("home"))
   else:
-    print("yewruklq")
     if request.method=="POST":
       form=Userform(request.POST)
       if form.is_valid():
-        
         form.save()
-        print("dfjdsf")
         return HttpResponseRedirect(reverse("login"))
 
       else:
@@ -38,7 +30,6 @@ def register(request):
           "form":form
         })
     else:
-      print("jhdsfjshkdf")
       form=Userform()
       return render(request,'register.html',{
         "form":form
@@ -47,7 +38,6 @@ def register(request):
   
 
 def login_view(request):
-  # request.session['message']="NULL"
   if request.user.is_authenticated:
     return HttpResponseRedirect(reverse("home"))
   else:

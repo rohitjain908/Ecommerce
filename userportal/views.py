@@ -42,7 +42,6 @@ def addItem(request):
         productId = request.POST.get('productId')
         userId = request.session['userId']
         user = User.objects.get(id = userId)
-        #print(user)
         product = Product.objects.get(id = productId)
 
         
@@ -80,9 +79,6 @@ def cart(request):
         return HttpResponseRedirect(reverse("login"))
 
 
-    # cart = Cart.objects.get(user = User.objects.get(id = 2))
-    # cart = CartSerializer(cart)
-    # print(cart.data)
     userId = request.session['userId']
     user = User.objects.get(id = userId)
 
@@ -91,12 +87,6 @@ def cart(request):
 
     cart = Cart.objects.get(user = user, buy = False)
     orderProducts = OrderProduct.objects.filter(cart = cart)
-    # print(orderProducts)
-    # resposeProducts = OrderProductSerializer(orderProducts, many = True)
-    # print(resposeProducts.data)
-
-
-
     return render(request, 'cart.html', {"empty" : False, "products" : orderProducts, "cart" : cart})
 
 
@@ -111,7 +101,6 @@ def add(request):
         return HttpResponseRedirect(reverse("login"))
     orderProductId = request.POST.get('orderProductId')
     orderProduct = OrderProduct.objects.get(id = orderProductId)
-    print(orderProduct)
     orderProduct.quantity = orderProduct.quantity + 1
     orderProduct.save()
 
@@ -125,13 +114,10 @@ def remove(request):
         return HttpResponseRedirect(reverse("login"))
     orderProductId = request.POST.get('orderProductId')
     orderProduct = OrderProduct.objects.get(id = orderProductId)
-    print(orderProduct)
     orderProduct.quantity = orderProduct.quantity - 1
     orderProduct.save()
     price = orderProduct.product.price
-    print(orderProduct.quantity)
     if orderProduct.quantity == 0:
-        print("here")
         orderProduct.delete()
         return JsonResponse({"status": 'Success', "price" : price, "removed" : True}) 
     
